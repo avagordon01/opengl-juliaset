@@ -12,6 +12,20 @@ static void error_callback(int error, const char* description) {
     printf("glfw error: %s\n", description);
 }
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+    if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+        if (glfwGetWindowMonitor(window)) {
+            glfwSetWindowMonitor(window, NULL, 0, 0, 800, 600, 60);
+        } else {
+            const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, 60);
+        }
+    }
+}
+
 int main() {
     //setup glfw, window
     glfwSetErrorCallback(error_callback);
@@ -19,12 +33,12 @@ int main() {
         printf("glfw error: failed to initialise\n");
 		return 1;
     }
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "project", glfwGetPrimaryMonitor(), NULL);
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    GLFWwindow* window = glfwCreateWindow(800, 600, "project", NULL, NULL);
     if (!window) {
         glfwTerminate();
         printf("glfw error: failed to create window\n");
@@ -34,6 +48,7 @@ int main() {
     //glfwSwapInterval(1);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+    glfwSetKeyCallback(window, key_callback);
 
     //create programs
     char* error_log = calloc(4096, sizeof(char));
@@ -85,9 +100,6 @@ int main() {
     glfwSetTime(0);
     for (uint64_t frames = 0;; frames++) {
         glfwPollEvents();
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, true);
-        }
         if (glfwWindowShouldClose(window)) {
             printf("%f\n", frames / glfwGetTime());
             glfwDestroyWindow(window);
@@ -99,9 +111,11 @@ int main() {
         glfwGetCursorPos(window, &mx, &my);
         inputs.mouse_x += (mx - inputs.mouse_x) * 0.01;
         inputs.mouse_y += (my - inputs.mouse_y) * 0.01;
-        mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        inputs.resolution_x = mode->width;
-        inputs.resolution_y = mode->height;
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        glViewport(0, 0, width, height);
+        inputs.resolution_x = width;
+        inputs.resolution_y = height;
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(inputs), &inputs);
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
