@@ -31,7 +31,7 @@ int main() {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit()) {
         printf("glfw error: failed to initialise\n");
-		return 1;
+        return 1;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
@@ -42,7 +42,7 @@ int main() {
     if (!window) {
         glfwTerminate();
         printf("glfw error: failed to create window\n");
-		return 1;
+        return 1;
     }
     glfwMakeContextCurrent(window);
     //glfwSwapInterval(1);

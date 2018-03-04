@@ -2,7 +2,7 @@ in vec4 gl_FragCoord;
 out vec3 colour;
 
 vec2 cmul(in vec2 a, in vec2 b) {
-	return vec2(a.x * b.x - a.y * b.y, a.y * b.x + a.x * b.y);
+    return vec2(a.x * b.x - a.y * b.y, a.y * b.x + a.x * b.y);
 }
 
 vec2 csqr(in vec2 a) {
@@ -24,26 +24,23 @@ vec4 colormap(float x) {
     return vec4(r, g, b, 1.0);
 }
 
-vec3 julia(vec2 z, vec2 c){
-    vec2 dz = vec2(1.0f, 0.0f);
+vec3 julia(vec2 z, vec2 c) {
     int i;
-    int n = 256;
+    int n = 512;
     for (i = 0; i < n; i++) {
-        dz = vec2(2.0f) * cmul(z, dz);
-		z = csqr(z) + c;
-		if (dot(z, z) > 4.0f)
+        z = csqr(z) + c;
+        if (dot(z, z) > 4.0f)
             break;
-	}
+    }
     if (i == n) {
         return vec3(0.0);
     } else {
-		float h = 2.0 * log(dot(z, z)) * length(z) / length(dz);
-    	return colormap(clamp(h / 8.0, 0.0f, 1.0f)).xyz;
+        return colormap(sqrt(float(i) / float(n))).xyz;
     }
 }
 
 void main() {
-	vec2 t = (gl_FragCoord.xy - (resolution.xy * vec2(0.5f))) / resolution.xx;
+    vec2 t = (gl_FragCoord.xy - (resolution.xy * vec2(0.5f))) / resolution.xx;
     t = t * vec2(4);
 
     vec2 m = (mouse.xy / resolution.xy) - vec2(0.5, 0.5);
