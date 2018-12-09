@@ -54,8 +54,8 @@ int main() {
     char* error_log = calloc(4096, sizeof(char));
     const char* shader_vertex[] = {
         "#version 450\n",
-        "#line 1 0\n", load("src/header.glsl"),
-        "#line 1 1\n", load("src/vertex.glsl"),
+        "#line 1 0\n", load("header.glsl"),
+        "#line 1 1\n", load("vertex.glsl"),
     };
     GLuint program_vertex = glCreateShaderProgramv(GL_VERTEX_SHADER, sizeof(shader_vertex) / sizeof(void*), shader_vertex);
     glGetProgramInfoLog(program_vertex, 4096, NULL, error_log);
@@ -65,8 +65,8 @@ int main() {
     }
     const char* shader_fragment[] = {
         "#version 450\n",
-        "#line 1 0\n", load("src/header.glsl"),
-        "#line 1 1\n", load("src/fragment.glsl"),
+        "#line 1 0\n", load("header.glsl"),
+        "#line 1 1\n", load("fragment.glsl"),
     };
     GLuint program_fragment = glCreateShaderProgramv(GL_FRAGMENT_SHADER, sizeof(shader_fragment) / sizeof(void*), shader_fragment);
     glGetProgramInfoLog(program_fragment, 4096, NULL, error_log);

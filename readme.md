@@ -6,7 +6,7 @@
 
 ## Run
 
-`bin/render`
+`render`
 
 ## Controls
 
